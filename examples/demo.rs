@@ -8,7 +8,7 @@ use tuirealm::StateValue;
 use tuirealm::{
     application::PollStrategy,
     command::{Cmd, CmdResult, Direction, Position},
-    event::{Event, Key, KeyEvent, KeyModifiers},
+    event::{Event, Key, KeyEvent, KeyEventKind, KeyModifiers},
     props::{Alignment, AttrValue, Attribute, BorderType, Borders, Color, Style, TextModifiers},
     terminal::TerminalBridge,
     Application, Component, EventListenerCfg, MockComponent, NoUserEvent, State, Update,
@@ -255,47 +255,62 @@ impl<'a> Default for Editor<'a> {
 impl<'a> Component<Msg, NoUserEvent> for Editor<'a> {
     fn on(&mut self, ev: Event<NoUserEvent>) -> Option<Msg> {
         match ev {
-            Event::Keyboard(KeyEvent { code: Key::Esc, .. }) => Some(Msg::AppClose),
+            Event::Keyboard(KeyEvent {
+                code: Key::Esc,
+                kind: KeyEventKind::Press,
+                ..
+            }) => Some(Msg::AppClose),
             Event::Keyboard(KeyEvent {
                 code: Key::Backspace,
+                kind: KeyEventKind::Press,
                 ..
             })
             | Event::Keyboard(KeyEvent {
                 code: Key::Char('h'),
                 modifiers: KeyModifiers::CONTROL,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::Delete);
                 Some(Msg::None)
             }
             Event::Keyboard(KeyEvent {
-                code: Key::Delete, ..
+                code: Key::Delete,
+                kind: KeyEventKind::Press,
+                ..
             }) => {
                 self.perform(Cmd::Cancel);
                 Some(Msg::None)
             }
             Event::Keyboard(KeyEvent {
                 code: Key::PageDown,
+                kind: KeyEventKind::Press,
                 ..
             })
             | Event::Keyboard(KeyEvent {
                 code: Key::Down,
                 modifiers: KeyModifiers::SHIFT,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::Scroll(Direction::Down));
                 Some(Msg::None)
             }
             Event::Keyboard(KeyEvent {
-                code: Key::PageUp, ..
+                code: Key::PageUp,
+                kind: KeyEventKind::Press,
+                ..
             })
             | Event::Keyboard(KeyEvent {
                 code: Key::Up,
                 modifiers: KeyModifiers::SHIFT,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::Scroll(Direction::Up));
                 Some(Msg::None)
             }
             Event::Keyboard(KeyEvent {
-                code: Key::Down, ..
+                code: Key::Down,
+                kind: KeyEventKind::Press,
+                ..
             }) => {
                 self.perform(Cmd::Move(Direction::Down));
                 Some(Msg::None)
@@ -303,12 +318,15 @@ impl<'a> Component<Msg, NoUserEvent> for Editor<'a> {
             Event::Keyboard(KeyEvent {
                 code: Key::Left,
                 modifiers: KeyModifiers::SHIFT,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::Custom(TEXTAREA_CMD_MOVE_WORD_BACK));
                 Some(Msg::None)
             }
             Event::Keyboard(KeyEvent {
-                code: Key::Left, ..
+                code: Key::Left,
+                kind: KeyEventKind::Press,
+                ..
             }) => {
                 self.perform(Cmd::Move(Direction::Left));
                 Some(Msg::None)
@@ -316,24 +334,36 @@ impl<'a> Component<Msg, NoUserEvent> for Editor<'a> {
             Event::Keyboard(KeyEvent {
                 code: Key::Right,
                 modifiers: KeyModifiers::SHIFT,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::Custom(TEXTAREA_CMD_MOVE_WORD_FORWARD));
                 Some(Msg::None)
             }
             Event::Keyboard(KeyEvent {
-                code: Key::Right, ..
+                code: Key::Right,
+                kind: KeyEventKind::Press,
+                ..
             }) => {
                 self.perform(Cmd::Move(Direction::Right));
                 Some(Msg::None)
             }
-            Event::Keyboard(KeyEvent { code: Key::Up, .. }) => {
+            Event::Keyboard(KeyEvent {
+                code: Key::Up,
+                kind: KeyEventKind::Press,
+                ..
+            }) => {
                 self.perform(Cmd::Move(Direction::Up));
                 Some(Msg::None)
             }
-            Event::Keyboard(KeyEvent { code: Key::End, .. })
+            Event::Keyboard(KeyEvent {
+                code: Key::End,
+                kind: KeyEventKind::Press,
+                ..
+            })
             | Event::Keyboard(KeyEvent {
                 code: Key::Char('e'),
                 modifiers: KeyModifiers::CONTROL,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::GoTo(Position::End));
                 Some(Msg::None)
@@ -344,6 +374,7 @@ impl<'a> Component<Msg, NoUserEvent> for Editor<'a> {
             | Event::Keyboard(KeyEvent {
                 code: Key::Char('m'),
                 modifiers: KeyModifiers::CONTROL,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::Custom(TEXTAREA_CMD_NEWLINE));
                 Some(Msg::None)
@@ -354,6 +385,7 @@ impl<'a> Component<Msg, NoUserEvent> for Editor<'a> {
             | Event::Keyboard(KeyEvent {
                 code: Key::Char('a'),
                 modifiers: KeyModifiers::CONTROL,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::GoTo(Position::Begin));
                 Some(Msg::None)
@@ -385,6 +417,7 @@ impl<'a> Component<Msg, NoUserEvent> for Editor<'a> {
             Event::Keyboard(KeyEvent {
                 code: Key::Char('z'),
                 modifiers: KeyModifiers::CONTROL,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::Custom(TEXTAREA_CMD_UNDO));
                 Some(Msg::None)
@@ -392,6 +425,7 @@ impl<'a> Component<Msg, NoUserEvent> for Editor<'a> {
             Event::Keyboard(KeyEvent {
                 code: Key::Char('y'),
                 modifiers: KeyModifiers::CONTROL,
+                kind: KeyEventKind::Press,
             }) => {
                 self.perform(Cmd::Custom(TEXTAREA_CMD_REDO));
                 Some(Msg::None)

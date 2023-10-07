@@ -163,6 +163,7 @@ use tuirealm::{Frame, MockComponent, State, StateValue};
 // -- props
 pub const TEXTAREA_CURSOR_LINE_STYLE: &str = "cursor-line-style";
 pub const TEXTAREA_CURSOR_STYLE: &str = "cursor-style";
+pub const TEXTAREA_CURSOR_POSITION: &str = "cursor-position";
 pub const TEXTAREA_FOOTER_FMT: &str = "footer-fmt";
 pub const TEXTAREA_LINE_NUMBER_STYLE: &str = "line-number-style";
 pub const TEXTAREA_MAX_HISTORY: &str = "max-history";
@@ -421,7 +422,7 @@ impl<'a> MockComponent for TextArea<'a> {
                     .as_ref(),
                 )
                 .split(area);
-            
+
             // Remove cursor if not in focus
             let focus = self
                 .props
@@ -458,12 +459,28 @@ impl<'a> MockComponent for TextArea<'a> {
     }
 
     fn query(&self, attr: Attribute) -> Option<AttrValue> {
-        self.props.get(attr)
+        match attr {
+            Attribute::Custom(TEXTAREA_CURSOR_POSITION) => {
+                let cursor = self.widget.cursor();
+                Some(AttrValue::Payload(PropPayload::Tup2((
+                    PropValue::Usize(cursor.0),
+                    PropValue::Usize(cursor.1),
+                ))))
+            }
+            _ => self.props.get(attr),
+        }
     }
 
     fn attr(&mut self, attr: Attribute, value: AttrValue) {
         self.props.set(attr, value.clone());
         match (attr, value) {
+            (
+                Attribute::Custom(TEXTAREA_CURSOR_POSITION),
+                AttrValue::Payload(PropPayload::Tup2((
+                    PropValue::U16(row),
+                    PropValue::U16(col),
+                ))),
+            ) => self.widget.move_cursor(CursorMove::Jump(row, col)),
             (Attribute::Custom(TEXTAREA_CURSOR_STYLE), AttrValue::Style(s)) => {
                 self.widget.set_cursor_style(s);
             }

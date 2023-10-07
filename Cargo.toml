@@ -16,21 +16,22 @@ repository = "https://github.com/veeso/tui-realm-textarea"
 [dependencies]
 cli-clipboard = { version = "^0.4", optional = true }
 lazy-regex = "^3"
-tuirealm = { version = "^1.8.0", default-features = false, features = [
-  "derive",
+tuirealm = { git = 'https://github.com/strowk/tui-realm.git', branch = "improvements", default-features = false, features = [
+    "derive"
 ] }
-tui-textarea = "^0.2"
+tui-textarea = {  git = 'https://github.com/strowk/tui-textarea.git', branch = "ratatui-0.22", default-features = false }
 
 [dev-dependencies]
 crossterm = "^0.25"
 pretty_assertions = "^1.0.0"
-tui-realm-stdlib = "^1.1.6"
+tui-realm-stdlib = {  git = 'https://github.com/strowk/tui-realm-stdlib.git', branch = "improvements", default-features = false }
 
 [features]
-default = ["with-crossterm"]
+default = ["with-crossterm", "ratatui"]
 clipboard = ["cli-clipboard"]
 search = ["tui-textarea/search"]
-with-crossterm = ["tuirealm/with-crossterm"]
+ratatui = ["tuirealm/ratatui", "tui-textarea/ratatui-your-backend"]
+with-crossterm = ["tuirealm/with-crossterm", "tui-textarea/crossterm"]
 with-termion = ["tuirealm/with-termion"]
 
 [[example]]
