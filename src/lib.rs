@@ -385,6 +385,13 @@ impl<'a> TextArea<'a> {
         None
     }
 
+    fn add_text(&mut self, text: &str) {
+        for line in text.lines() {
+            self.widget.insert_str(line);
+            self.widget.insert_newline();
+        }
+    }
+
     #[cfg(feature = "clipboard")]
     fn paste(&mut self) {
         // get content from context
