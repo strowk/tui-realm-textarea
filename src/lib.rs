@@ -385,7 +385,7 @@ impl<'a> TextArea<'a> {
         None
     }
 
-    fn add_text(&mut self, text: &str) {
+    pub fn add_text(&mut self, text: &str) {
         for line in text.lines() {
             self.widget.insert_str(line);
             self.widget.insert_newline();
