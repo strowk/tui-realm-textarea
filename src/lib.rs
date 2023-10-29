@@ -392,6 +392,11 @@ impl<'a> TextArea<'a> {
         }
     }
 
+    pub fn get_current_line(&mut self) -> String {
+        let it = self.widget.lines()[self.widget.cursor().0].clone();
+        it.to_string()
+    }
+
     #[cfg(feature = "clipboard")]
     fn paste(&mut self) {
         // get content from context
@@ -483,10 +488,7 @@ impl<'a> MockComponent for TextArea<'a> {
         match (attr, value) {
             (
                 Attribute::Custom(TEXTAREA_CURSOR_POSITION),
-                AttrValue::Payload(PropPayload::Tup2((
-                    PropValue::U16(row),
-                    PropValue::U16(col),
-                ))),
+                AttrValue::Payload(PropPayload::Tup2((PropValue::U16(row), PropValue::U16(col)))),
             ) => self.widget.move_cursor(CursorMove::Jump(row, col)),
             (Attribute::Custom(TEXTAREA_CURSOR_STYLE), AttrValue::Style(s)) => {
                 self.widget.set_cursor_style(s);
